@@ -79,14 +79,14 @@ for fname in images:
 
     newcameramtx, roi=cv2.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
 
-    # # 使用 cv.undistort()进行畸变校正
+    # # use cv.undistort() to correct the distortion
     # dst = cv2.undistort(img, mtx, dist, None, newcameramtx)
-    # # 对图片有效区域进行剪裁
+    # # cut the used area
     # # x, y, w, h = roi
     # # dst = dst[y:y+h, x:x+w]
     # cv2.imwrite('undistort/'+prefix, dst)
 
-    #  使用 remap() 函数进行校正
+    #  use  remap() function to correct the image
     mapx, mapy = cv2.initUndistortRectifyMap(mtx, dist, None, newcameramtx, (w, h), 5)
     dst = cv2.remap(img, mapx, mapy, cv2.INTER_LINEAR)
     # 对图片有效区域进行剪裁
@@ -94,7 +94,7 @@ for fname in images:
     dst = dst[y:y + h, x:x + w]
     cv2.imwrite('./undistort/'+prefix, dst)
 
-#重投影误差计算
+#the errot of multi-projection
 mean_error = 0
 for i in range(len(objpoints)):
     imgpoints2, _ = cv2.projectPoints(objpoints[i], rvecs[i], tvecs[i], mtx, dist)
@@ -103,7 +103,7 @@ for i in range(len(objpoints)):
 
 print("total error: ", mean_error/len(objpoints))
 
-# 保存结果
+# save the results
 result = "cameraMatrix：\n"+str(mtx)+"\ndistCoeff：\n"+str(dist)+"\ntotal error:\n"+str(mean_error/len(objpoints))
 save_path = "result/mono_calib.txt"
 with open(save_path,'w') as f:
